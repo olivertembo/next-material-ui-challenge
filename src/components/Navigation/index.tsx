@@ -12,8 +12,8 @@ type NavigationItem = {
 };
 
 const navigationItems: NavigationItem[] = [
-  { title: 'Item 1', children: [{ title: 'Subitem 1',  route: '/about' }, { title: 'Subitem 2' }] },
-  { title: 'Item 2', route: '/item-2', children: [{ title: 'Subitem 21' }, { title: 'Subitem 22' }] },
+  { title: 'Item 1', route: '/about', children: [{ title: 'Subitem 1' }, { title: 'Subitem 2' }] },
+  { title: 'Item 2' },
   { title: 'Item 3', route: '/item-3', },
   { title: 'Item 4', route: '/item-4', },
 ];
@@ -22,19 +22,17 @@ export default function Home() {
   const [selectedItem, setSelectedItem] = useState('');
   const [openItems, setOpenItems] = useState<string[]>([]);
 
-  const handleToggle = (item: NavigationItem) => {
-    const currentIndex = openItems.indexOf(item.title);
+  const handleToggle = (item: string) => {
+    const currentIndex = openItems.indexOf(item);
     const newOpenItems = [...openItems];
 
     if (currentIndex === -1) {
-      newOpenItems.push(item.title);
+      newOpenItems.push(item);
     } else {
       newOpenItems.splice(currentIndex, 1);
     }
 
-    if (!item.children) {
-      setSelectedItem(item.title);
-    }
+    setSelectedItem(item);
 
     setOpenItems(newOpenItems);
   };
@@ -44,12 +42,9 @@ export default function Home() {
       {items.map((item) => (
         <div key={item.title}>
           <ListItem disablePadding>
-            <ListItemButton
-              selected={item.title === selectedItem}
-              onClick={() => handleToggle(item)}
-            >
+            <ListItemButton onClick={() => handleToggle(item.title)}>
               <ListItemText primary={item.title} style={{ paddingLeft: depth * 20 }} />
-              {item.children && (openItems.includes(item.title) ? <ExpandLess /> : <ExpandMore />)}
+              {openItems.includes(item.title) ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
           </ListItem>
           <Collapse in={openItems.includes(item.title)} timeout="auto" unmountOnExit>
@@ -61,27 +56,20 @@ export default function Home() {
   );
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <Drawer sx={{
-        width: "150px",
-        "& .MuiDrawer-paper": {
-          minWidth: "150px",
-        },
-        height: "100vh",
-        backgroundColor: "grey.100",
-      }} variant="permanent" open>
-        {renderNavigationItems(navigationItems)}
-      </Drawer>
-      <Box
-        component="main"
-        sx={{
-          p: 3,
-          width: "100%",
-          marginLeft: "184px",
-        }}
-      >
-        <Typography>{selectedItem}</Typography>
+      <Box sx={{ display: "flex" }}>
+        <Drawer variant="permanent" open>
+          {renderNavigationItems(navigationItems)}
+        </Drawer>
+        <Box
+          component="main"
+          sx={{
+            p: 3,
+            width: "100%",
+            marginLeft: "184px",
+          }}
+        >
+          <Typography>{selectedItem}</Typography>
+        </Box>
       </Box>
-    </Box>
   );
 }
