@@ -64,6 +64,7 @@ const navigationItems: NavigationItem[] = [
 
 export default function Home() {
   const [selectedItem, setSelectedItem] = useState(localStorage?.getItem("selectedItem") || '');
+  const [selectedItemKey, setSelectedItemKey] = useState<string>('');
   const [openItems, setOpenItems] = useState<string[]>(localStorage?.getItem("openItems")?.split(',') || []);
 
   const handleToggle = (key: string, depth: number) => {
@@ -79,6 +80,7 @@ export default function Home() {
       }
   
       setSelectedItem(title);
+      setSelectedItemKey(key);
       setOpenItems(newOpenItems);
     }
   };
@@ -97,14 +99,14 @@ export default function Home() {
         <div key={`${item.title}-${index}-${depth}`}>
           <ListItem disablePadding>
             <ListItemButton
-              selected={`${item.title}-${index}-${depth}` === selectedItem}
+              selected={key === selectedItemKey}
               onClick={() => handleToggle(key, depth)}
             >
               <ListItemText primary={item.title} style={{ paddingLeft: depth * 20 }} />
-              {item.children ? (openItems.includes(`${item.title}-${index}-${depth}`) ? <ExpandLess /> : <ExpandMore />) : null}
+              {item.children ? (openItems.includes(key) ? <ExpandLess /> : <ExpandMore />) : null}
             </ListItemButton>
           </ListItem>
-          <Collapse in={openItems.includes(`${item.title}-${index}-${depth}`)} timeout="auto" unmountOnExit>
+          <Collapse in={openItems.includes(key)} timeout="auto" unmountOnExit>
             {item.children && renderNavigationItems(item.children, depth + 1)}
           </Collapse>
         </div>
