@@ -12,27 +12,29 @@ type NavigationItem = {
 };
 
 const navigationItems: NavigationItem[] = [
-  { title: 'Item 1', route: '/about', children: [{ title: 'Subitem 1' }, { title: 'Subitem 2' }] },
-  { title: 'Item 2' },
+  { title: 'Item 1', children: [{ title: 'Subitem 1',  route: '/about' }, { title: 'Subitem 2' }] },
+  { title: 'Item 2', route: '/item-2', children: [{ title: 'Subitem 21' }, { title: 'Subitem 22' }] },
   { title: 'Item 3', route: '/item-3', },
   { title: 'Item 4', route: '/item-4', },
 ];
 
-export default function Home() {
+export default function Navigation() {
   const [selectedItem, setSelectedItem] = useState('');
   const [openItems, setOpenItems] = useState<string[]>([]);
 
-  const handleToggle = (item: string) => {
-    const currentIndex = openItems.indexOf(item);
+  const handleToggle = (item: NavigationItem) => {
+    const currentIndex = openItems.indexOf(item.title);
     const newOpenItems = [...openItems];
 
     if (currentIndex === -1) {
-      newOpenItems.push(item);
+      newOpenItems.push(item.title);
     } else {
       newOpenItems.splice(currentIndex, 1);
     }
 
-    setSelectedItem(item);
+    if (!item.children) {
+      setSelectedItem(item.title);
+    }
 
     setOpenItems(newOpenItems);
   };
@@ -42,9 +44,12 @@ export default function Home() {
       {items.map((item) => (
         <div key={item.title}>
           <ListItem disablePadding>
-            <ListItemButton onClick={() => handleToggle(item.title)}>
+            <ListItemButton
+              selected={item.title === selectedItem}
+              onClick={() => handleToggle(item)}
+            >
               <ListItemText primary={item.title} style={{ paddingLeft: depth * 20 }} />
-              {openItems.includes(item.title) ? <ExpandLess /> : <ExpandMore />}
+              {item.children && (openItems.includes(item.title) ? <ExpandLess /> : <ExpandMore />)}
             </ListItemButton>
           </ListItem>
           <Collapse in={openItems.includes(item.title)} timeout="auto" unmountOnExit>
@@ -56,20 +61,20 @@ export default function Home() {
   );
 
   return (
-      <Box sx={{ display: "flex" }}>
-        <Drawer variant="permanent" open>
-          {renderNavigationItems(navigationItems)}
-        </Drawer>
-        <Box
-          component="main"
-          sx={{
-            p: 3,
-            width: "100%",
-            marginLeft: "184px",
-          }}
-        >
-          <Typography>{selectedItem}</Typography>
-        </Box>
+    <Box sx={{ display: "flex" }}>
+      <Drawer variant="permanent" open>
+        {renderNavigationItems(navigationItems)}
+      </Drawer>
+      <Box
+        component="main"
+        sx={{
+          p: 3,
+          width: "100%",
+          backgroundColor: "grey.100",
+        }}
+      >
+        <Typography>{selectedItem}</Typography>
       </Box>
+    </Box>
   );
 }
