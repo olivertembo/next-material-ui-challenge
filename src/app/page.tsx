@@ -62,14 +62,7 @@ export default function Home() {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <Drawer sx={{
-        width: "150px",
-        "& .MuiDrawer-paper": {
-          minWidth: "150px",
-        },
-        height: "100vh",
-        backgroundColor: "grey.100",
-      }} variant="permanent" open>
+      <Drawer variant="permanent" open>
         {renderNavigationItems(navigationItems)}
       </Drawer>
       <Box
@@ -77,7 +70,7 @@ export default function Home() {
         sx={{
           p: 3,
           width: "100%",
-          marginLeft: "184px",
+          backgroundColor: "grey.100",
         }}
       >
         <Typography>{selectedItem}</Typography>

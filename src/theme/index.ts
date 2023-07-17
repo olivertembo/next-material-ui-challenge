@@ -31,6 +31,18 @@ const theme = createTheme({
         },
       },
     },
+    MuiDrawer: {
+      styleOverrides: {
+        root: {
+          width: "150px",
+          height: "100vh",
+          backgroundColor: "grey.100",
+        },
+        paper: {
+          minWidth: "150px",
+        }
+      }
+    }
   },
 });
 
