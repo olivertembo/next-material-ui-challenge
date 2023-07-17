@@ -63,9 +63,10 @@ const navigationItems: NavigationItem[] = [
 ];
 
 export default function Home() {
-  const [selectedItem, setSelectedItem] = useState(localStorage?.getItem("selectedItem") || '');
+  const [selectedItem, setSelectedItem] = useState<string>(() => typeof window !== "undefined" ? localStorage.getItem("selectedItem") || '' : '');
+  const [openItems, setOpenItems] = useState<string[]>(() => typeof window !== "undefined" ? localStorage.getItem("openItems")?.split(',') || [] : []);
+  
   const [selectedItemKey, setSelectedItemKey] = useState<string>('');
-  const [openItems, setOpenItems] = useState<string[]>(localStorage?.getItem("openItems")?.split(',') || []);
 
   const handleToggle = (key: string, depth: number) => {
     const [title, index, keyDepth] = key.split("-");
@@ -87,10 +88,12 @@ export default function Home() {
   
 
   useEffect(() => {
-    localStorage.setItem("selectedItem", selectedItem);
-    localStorage.setItem("openItems", openItems.join(','));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("selectedItem", selectedItem);
+      localStorage.setItem("openItems", openItems.join(','));
+    }
   }, [selectedItem, openItems]);
-
+  
   const renderNavigationItems = (items: NavigationItem[], depth = 0) => (
     <List>
       {items.map((item, index) => {
