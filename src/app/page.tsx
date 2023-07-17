@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Box, Typography, Drawer, List, ListItem, ListItemText, ListItemButton, Collapse } from '@mui/material';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import * as styles from './styles';
 
 type NavigationItem = {
   title: string;
@@ -61,17 +62,13 @@ export default function Home() {
   );
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={styles.container}>
       <Drawer variant="permanent" open>
         {renderNavigationItems(navigationItems)}
       </Drawer>
       <Box
         component="main"
-        sx={{
-          p: 3,
-          width: "100%",
-          backgroundColor: "grey.100",
-        }}
+        sx={styles.main}
       >
         <Typography>{selectedItem}</Typography>
       </Box>
