@@ -6,15 +6,24 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import * as styles from './styles';
 
-type NavigationItem = {
+type NavigationItemBase = {
   title: string;
-  route?: string;
-  children?: NavigationItem[];
 };
+
+type NavigationItemWithRoute = NavigationItemBase & {
+  route?: string;
+};
+
+type NavigationItemWithChildren = NavigationItemBase & {
+  route?: never;
+  children: NavigationItem[];
+};
+
+type NavigationItem = NavigationItemWithRoute | NavigationItemWithChildren;
 
 const navigationItems: NavigationItem[] = [
   { title: 'Item 1', children: [{ title: 'Subitem 1',  route: '/about' }, { title: 'Subitem 2' }] },
-  { title: 'Item 2', route: '/item-2', children: [{ title: 'Subitem 21' }, { title: 'Subitem 22' }] },
+  { title: 'Item 2', children: [{ title: 'Subitem 21' }, { title: 'Subitem 22' }] },
   { title: 'Item 3', route: '/item-3', },
   { title: 'Item 4', route: '/item-4', },
 ];
@@ -33,7 +42,7 @@ export default function Home() {
       newOpenItems.splice(currentIndex, 1);
     }
 
-    if (!item.children) {
+    if (!item?.children) {
       setSelectedItem(item.title);
     }
 
