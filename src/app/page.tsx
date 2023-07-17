@@ -90,7 +90,7 @@ export default function Home() {
         <div key={`${item.title}-${index}-${depth}`}>
           <ListItem disablePadding>
             <ListItemButton
-              selected={item.title === selectedItem}
+              selected={`${item.title}-${index}-${depth}` === selectedItem}
               onClick={() => handleToggle(`${item.title}-${index}-${depth}`)}
             >
               <ListItemText primary={item.title} style={{ paddingLeft: depth * 20 }} />
