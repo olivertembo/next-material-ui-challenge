@@ -63,21 +63,26 @@ const navigationItems: NavigationItem[] = [
 ];
 
 export default function Home() {
-  const [selectedItem, setSelectedItem] = useState(localStorage.getItem("selectedItem") || '');
-  const [openItems, setOpenItems] = useState<string[]>(localStorage.getItem("openItems")?.split(',') || []);
+  const [selectedItem, setSelectedItem] = useState(localStorage?.getItem("selectedItem") || '');
+  const [openItems, setOpenItems] = useState<string[]>(localStorage?.getItem("openItems")?.split(',') || []);
 
-  const handleToggle = (key: string) => {
-    const currentIndex = openItems.indexOf(key);
-    const newOpenItems = [...openItems];
-
-    if (currentIndex === -1) {
-      newOpenItems.push(key);
-    } else {
-      newOpenItems.splice(currentIndex, 1);
+  const handleToggle = (key: string, depth: number) => {
+    const [title, index, keyDepth] = key.split("-");
+    if (Number(keyDepth) === depth) {
+      let newOpenItems = openItems.filter(item => {
+        const [, , itemDepth] = item.split("-");
+        return Number(itemDepth) !== depth;
+      });
+  
+      if (!openItems.includes(key)) {
+        newOpenItems.push(key);
+      }
+  
+      setSelectedItem(title);
+      setOpenItems(newOpenItems);
     }
-    setSelectedItem(key);
-    setOpenItems(newOpenItems);
   };
+  
 
   useEffect(() => {
     localStorage.setItem("selectedItem", selectedItem);
@@ -86,12 +91,14 @@ export default function Home() {
 
   const renderNavigationItems = (items: NavigationItem[], depth = 0) => (
     <List>
-      {items.map((item, index) => (
+      {items.map((item, index) => {
+        const key = `${item.title}-${index}-${depth}`;
+        return (
         <div key={`${item.title}-${index}-${depth}`}>
           <ListItem disablePadding>
             <ListItemButton
               selected={`${item.title}-${index}-${depth}` === selectedItem}
-              onClick={() => handleToggle(`${item.title}-${index}-${depth}`)}
+              onClick={() => handleToggle(key, depth)}
             >
               <ListItemText primary={item.title} style={{ paddingLeft: depth * 20 }} />
               {item.children ? (openItems.includes(`${item.title}-${index}-${depth}`) ? <ExpandLess /> : <ExpandMore />) : null}
@@ -101,7 +108,7 @@ export default function Home() {
             {item.children && renderNavigationItems(item.children, depth + 1)}
           </Collapse>
         </div>
-      ))}
+      )})}
     </List>
   );
 
