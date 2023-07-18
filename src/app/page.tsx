@@ -99,7 +99,7 @@ export default function Home() {
       {items.map((item, index) => {
         const key = `${item.title}-${index}-${depth}`;
         return (
-        <div key={`${item.title}-${index}-${depth}`}>
+        <div key={key}>
           <ListItem disablePadding>
             <ListItemButton
               selected={key === selectedItemKey}
