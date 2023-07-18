@@ -65,8 +65,7 @@ const navigationItems: NavigationItem[] = [
 export default function Home() {
   const [selectedItem, setSelectedItem] = useState<string>(() => typeof window !== "undefined" ? localStorage.getItem("selectedItem") || '' : '');
   const [openItems, setOpenItems] = useState<string[]>(() => typeof window !== "undefined" ? localStorage.getItem("openItems")?.split(',') || [] : []);
-  
-  const [selectedItemKey, setSelectedItemKey] = useState<string>('');
+  const [selectedItemKey, setSelectedItemKey] = useState<string>(() => typeof window !== "undefined" ? localStorage.getItem("selectedItemKey") || '' : '');
 
   const handleToggle = (key: string, depth: number) => {
     const [title, index, keyDepth] = key.split("-");
@@ -90,9 +89,10 @@ export default function Home() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("selectedItem", selectedItem);
+      localStorage.setItem("selectedItemKey", selectedItemKey);
       localStorage.setItem("openItems", openItems.join(','));
     }
-  }, [selectedItem, openItems]);
+  }, [selectedItem, openItems, selectedItemKey]);
   
   const renderNavigationItems = (items: NavigationItem[], depth = 0) => (
     <List>
